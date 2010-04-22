@@ -161,7 +161,7 @@ void Schema::buildTable (const ComplexType& it, const std::vector<std::string>& 
                                 }
                                 if (/*(!it2->minOccurs.compare ("1") && !it2->maxOccurs.compare ("1")) || (!it2->minOccurs.length ())*/1) {
                                         if (!name.length ()) name = "id" + type;
-//                                        tmp.field.push_back (Field (name, "int"));
+                                        tmp.field.push_back (Field (name, "int"));
                                         fk.push_back (FK (it.name, name, type, "id"));
                                 } else {
 					std::cout << it.name << " " << it2->minOccurs << " " << it2->maxOccurs << std::endl;
@@ -199,7 +199,7 @@ void Schema::buildSQLModel (const std::vector<std::string>& individual) {
 std::string Schema::toSQL () {
 	std::string res;
 	for (size_t i = 0; i < table.size (); i++) {
-		res += "CREATE TABLE " + table[i].name + "(";
+		res += "CREATE TABLE " + table[i].name + "( id serial, ";
 		for (size_t j = 0, size2 = table[i].field.size (); j < size2; j++) {
 			res += table[i].field[j].name + " " + table[i].field[j].type;
 			if (!table[i].field[j].name.compare (table[i].pk)) res += " primary key";
