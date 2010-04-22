@@ -164,7 +164,6 @@ void Schema::buildTable (const ComplexType& it, const std::vector<std::string>& 
                                         tmp.field.push_back (Field (name, "int"));
                                         fk.push_back (FK (it.name, name, type, "id"));
                                 } else {
-					std::cout << it.name << " " << it2->minOccurs << " " << it2->maxOccurs << std::endl;
                                         Table tmp2 (it.name + "_" + type, "id");
 //					tmp2.field.push_back (Field ("id", "serial"));
                                         tmp2.field.push_back (Field ("id" + it.name, "int"));
@@ -399,7 +398,6 @@ std::string Schema::toHbm (const std::string& name) {
 
 	// for each FK
         for (std::vector<FK>::iterator it = fk.begin (); it != fk.end (); it++) {
-		std::cout << it->table1 << " " << it->field1 << " " << it->table2 << " " << it->field2 << std::endl; 
 		if (!it->table1.compare (tbl.name)) {
 			res += "<many-to-one name=\"m_" + javaName (it->table2) + "\" class=\"" + javaName (it->table2) + "\" ><column name=\"" + javaName (it->field1) + "\" not-null=\"false\" /></many-to-one>\n";
 		} else if (!it->table2.compare (tbl.name)) {
