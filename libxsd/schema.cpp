@@ -198,17 +198,17 @@ void Schema::buildSQLModel (const std::vector<std::string>& individual) {
 std::string Schema::toSQL () {
 	std::string res;
 	for (size_t i = 0; i < table.size (); i++) {
-		res += "CREATE TABLE " + table[i].name + "( id serial, ";
+		res += "CREATE TABLE \"" + table[i].name + "\"( id serial, ";
 		for (size_t j = 0, size2 = table[i].field.size (); j < size2; j++) {
-			res += table[i].field[j].name + " " + table[i].field[j].type;
+			res += "\"" + table[i].field[j].name + "\" " + sqlType (table[i].field[j].type);
 			if (!table[i].field[j].name.compare (table[i].pk)) res += " primary key";
 			if (j != size2 - 1) res += ",";
 		}
-		res += ");";
+		res += ", CONSTRAINT " + table[i].name + "_pkey PRIMARY KEY (id));";
 	}
 
 	for (size_t i = 0; i != this->fk.size (); i++) {
-		res += "ALTER TABLE " + this->fk[i].table1 + " ADD CONSTRAINT f" + this->fk[i].table1 + this->fk[i].table2 + this->fk[i].field1 + " FOREIGN KEY (" + this->fk[i].field1 + ") REFERENCES " + this->fk[i].table2 + "(" + this->fk[i].field2 + ");"; 
+		res += "ALTER TABLE \"" + this->fk[i].table1 + "\" ADD CONSTRAINT f" + this->fk[i].table1 + this->fk[i].table2 + this->fk[i].field1 + " FOREIGN KEY (" + this->fk[i].field1 + ") REFERENCES \"" + this->fk[i].table2 + "\"(" + this->fk[i].field2 + ");"; 
 	}
 
 	return res;
