@@ -95,7 +95,7 @@ int main (int argc, char** argv) {
 	if (listClasses) {
 		std::vector<std::string> table = sch.listTables ();
 		for (size_t i = 0; i < table.size (); i++) {
-			std::cout << table[i] << " " << lang::javaName (table[i]) << std::endl;
+			std::cout << table[i] << " " << /*lang::javaName (table[i]) << */std::endl;
 		}
 		return 0;
 	}
