@@ -1,6 +1,6 @@
 AC_INIT([xsdtools], [0.1], [andrey.baboshin@gmail.com])
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4)
-BOOST_REQUIRE([1.39.0])
+#BOOST_REQUIRE([1.41.0])
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])

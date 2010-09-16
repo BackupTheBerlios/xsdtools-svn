@@ -401,12 +401,15 @@ std::string Schema::toHbm (const std::string& name) {
 		if (it->name.compare ("id")) res += "<property name=\"" + javaName (it->name) + "\" type=\"" + javaType (it->type) + "\"><column name=\"" + sqlType (it->name) + "\"/></property>\n";
 	}
 
+	std::string suffix = "";
 	// for each FK
         for (std::vector<FK>::iterator it = fk.begin (); it != fk.end (); it++) {
 		if (!it->table1.compare (tbl.name)) {
-			res += "<many-to-one name=\"m_" + javaName (it->table2) + "\" class=\"" + javaName (it->table2) + "\" ><column name=\"" + javaName (it->field1) + "\" not-null=\"false\" /></many-to-one>\n";
+			res += "<many-to-one name=\"m_" + javaName (it->table2) + suffix + "\" class=\"" + javaName (it->table2) + "\" ><column name=\"" + javaName (it->field1) + "\" not-null=\"false\" /></many-to-one>\n";
+			suffix += "1";
 		} else if (!it->table2.compare (tbl.name)) {
-			res += "<set name=\"" + javaName (it->table1) + "s\" inverse=\"true\" cascade=\"none\"><key><column name=\"" + javaName (it->field1) + "\" not-null=\"true\" /></key><one-to-many class=\"" + javaName (it->table1) + "\"/></set>\n";
+			res += "<set name=\"" + javaName (it->table1) + "s" + suffix + "\" inverse=\"true\" cascade=\"none\"><key><column name=\"" + javaName (it->field1) + "\" not-null=\"true\" /></key><one-to-many class=\"" + javaName (it->table1) + "\"/></set>\n";
+			suffix += "1";
 		}
 	}
 	res += "</class>\n</hibernate-mapping>\n";
