@@ -43,7 +43,7 @@ namespace lang {
 	std::string javaType (std::string type) {
 	        if (!type.compare ("serial")) return "java.lang.Integer";
 	        if (!type.compare ("int")) return "java.lang.Integer";
-	        if (!type.compare ("string")) return "String";
+//	        if (!type.compare ("string")) return "String";
 		if (!type.compare ("decimal")) return "java.math.BigDecimal";
 		if (!type.compare ("unsignedByte")) return "java.lang.Integer";
 		if (!type.compare ("dateTime")) return "java.sql.Timestamp";
@@ -240,7 +240,7 @@ std::string Schema::toHbm (const std::string& name) {
 		if (!it->table1.compare (tbl.name)) {
 			if (suffix1.find (it->table2) == suffix1.end ()) suffix1[it->table2] = "";
 			else suffix1[it->table2] += "1";
-			res += "<many-to-one name=\"m_" + javaName (it->table2) + suffix1[it->table2] + "\" class=\"" + javaName (it->table2) + "\" ><column name=\"" + javaName (it->field1) + "\" not-null=\"false\" /></many-to-one>\n";
+			res += "<many-to-one insert=\"false\" update=\"false\" name=\"m_" + javaName (it->table2) + suffix1[it->table2] + "\" class=\"" + javaName (it->table2) + "\" ><column name=\"" + javaName (it->field1) + "\" not-null=\"false\" /></many-to-one>\n";
 		} else if (!it->table2.compare (tbl.name)) {
 			if (suffix2.find (it->table1) == suffix2.end ()) suffix2[it->table1] = "";
 			else suffix2[it->table1] += "1";
