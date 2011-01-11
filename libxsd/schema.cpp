@@ -24,7 +24,7 @@
 
 namespace lang {
 	bool isSimple (const std::string& type) {
-	        if (!type.compare ("string") || !type.compare ("int") || !type.compare ("boolean") || !type.compare ("decimal") || !type.compare ("unsignedByte") || !type.compare ("dateTime")) return true;
+	        if (!type.compare ("string") || !type.compare ("int") || !type.compare ("boolean") || !type.compare ("decimal") || !type.compare ("unsignedByte") || !type.compare ("dateTime") || !type.compare ("integer")) return true;
 	        return false;
 	}
 
@@ -36,13 +36,15 @@ namespace lang {
 	}
 
 	std::string javaName (std::string name) {
+            size_t pos = name.find (':');
+            if (pos != std::string::npos) name.assign (name.begin () + pos + 1, name.end());
 	        boost::replace_all (name, "_", "");
 	        return name;
 	}
 
 	std::string javaType (std::string type) {
 	        if (!type.compare ("serial")) return "java.lang.Integer";
-	        if (!type.compare ("int")) return "java.lang.Integer";
+	        if (!type.compare ("int") || !type.compare ("integer")) return "java.lang.Integer";
 //	        if (!type.compare ("string")) return "String";
 		if (!type.compare ("decimal")) return "java.math.BigDecimal";
 		if (!type.compare ("unsignedByte")) return "java.lang.Integer";
@@ -80,17 +82,17 @@ void Schema::load (const std::string& xsd, const std::vector<std::string>& indiv
 
 		el = el->children;
 		for (; el; el = el->next) {
-			if (strncmp (reinterpret_cast<const char*>(el->name), "complexType", 11) == 0) {
+			if (strncmp (reinterpret_cast<const char*>(el->name), "complexType", 11) == 0 ) {
 				xmlNode* seq = el->children;
 				ComplexType cmplx;
 				cmplx.name = (const char*) xmlGetProp (el, (const xmlChar*) "name");
-				for (;seq; seq = seq->next) {
+                for (;seq; seq = seq->next) {
 					if (strncmp (reinterpret_cast<const char*>(seq->name), "sequence", 8) == 0) {
 						for (xmlNode* chld = seq->children; chld; chld = chld->next) {
 							if (strncmp (reinterpret_cast<const char*>(chld->name), "element", 7) == 0) {
 								Element e;
 								if (xmlHasProp (chld, (const xmlChar*)"name")) e.name = (const char*)xmlGetProp (chld, (const xmlChar*)"name");
-								if (xmlHasProp (chld, (const xmlChar*)"type")) e.type = (const char*)xmlGetProp (chld, (const xmlChar*)"type");
+								if (xmlHasProp (chld, (const xmlChar*)"type")) e.type = javaName ((const char*)xmlGetProp (chld, (const xmlChar*)"type"));
 								if (xmlHasProp (chld, (const xmlChar*)"ref")) e.ref = (const char*)xmlGetProp (chld, (const xmlChar*)"ref");
 								if (xmlHasProp (chld, (const xmlChar*)"maxOccurs")) e.maxOccurs = (const char*)xmlGetProp (chld, (const xmlChar*)"maxOccurs");
 								if (xmlHasProp (chld, (const xmlChar*)"minOccurs")) e.minOccurs = (const char*)xmlGetProp (chld, (const xmlChar*)"minOccurs");
@@ -103,7 +105,7 @@ void Schema::load (const std::string& xsd, const std::vector<std::string>& indiv
 			} else if (strncmp (reinterpret_cast<const char*>(el->name), "element", 7) == 0) {
 				Element e;
 				if (xmlHasProp (el, (const xmlChar*)"name")) e.name = (const char*)xmlGetProp (el, (const xmlChar*)"name");
-				if (xmlHasProp (el, (const xmlChar*)"type")) e.type = (const char*)xmlGetProp (el, (const xmlChar*)"type");
+				if (xmlHasProp (el, (const xmlChar*)"type")) e.type = javaName( (const char*)xmlGetProp (el, (const xmlChar*)"type") );
 				this->element.push_back (e);
 			}
 		}
@@ -156,15 +158,15 @@ void Schema::buildTable (const ComplexType& it, const std::vector<std::string>& 
                         if (isSimple (it2->type)) {
                                 tmp.field.push_back (Field (it2->name, it2->type));
                         } else {
-				std::string type = it2->type;
-				std::string name = it2->name;
+				                std::string type = it2->type;
+				                std::string name = it2->name;
                                 for (size_t i = 0; i != size; i++) {
                                         if (!it2->type.compare (individual[i])) {
                                                 sd += "0";
                                                 ComplexType tmp2 = sys[i];
                                                 type = tmp2.name = /*it2->type + */it2->name + "T";
-						buildTable (tmp2, individual, sys, sd);
-						break;
+						                        buildTable (tmp2, individual, sys, sd);
+						                        break;
                                         }
                                 }
                                 if (!name.length ()) name = "id" + type;
@@ -188,7 +190,7 @@ void Schema::buildSQLModel (const std::vector<std::string>& individual) {
         std::string sd = "0";
 
         for (std::vector<ComplexType>::iterator it = type.begin (); it != type.end (); it++) {
-		buildTable (*it, individual, sys, sd);
+		    buildTable (*it, individual, sys, sd);
         }
 }
 
