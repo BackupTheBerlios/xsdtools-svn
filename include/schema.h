@@ -22,7 +22,7 @@ namespace lang {
         bool isSimple (const std::string& type);
         std::string sqlType (const std::string& type);
         std::string javaName (std::string name);
-        std::string javaType (std::string type);
+        std::string javaType (const std::string& type);
 }
 
 struct Field {
@@ -63,8 +63,6 @@ public:
 	std::string javaPackage;
 
 	void load (const std::string& xsd, const std::vector<std::string>& individual = std::vector<std::string> ());
-	std::string toSQL ();
-//	std::string toJava (const std::string& name);
 	std::string toHbm (const std::string& name);
 	
 	std::vector<std::string> listTables () const;

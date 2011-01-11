@@ -42,7 +42,7 @@ namespace lang {
 	        return name;
 	}
 
-	std::string javaType (std::string type) {
+	std::string javaType (const std::string& type) {
 	        if (!type.compare ("serial")) return "java.lang.Integer";
 	        if (!type.compare ("int") || !type.compare ("integer")) return "java.lang.Integer";
 //	        if (!type.compare ("string")) return "String";
@@ -192,25 +192,6 @@ void Schema::buildSQLModel (const std::vector<std::string>& individual) {
         for (std::vector<ComplexType>::iterator it = type.begin (); it != type.end (); it++) {
 		    buildTable (*it, individual, sys, sd);
         }
-}
-
-std::string Schema::toSQL () {
-	std::string res;
-	for (size_t i = 0; i < table.size (); i++) {
-		res += "CREATE TABLE \"" + table[i].name + "\"(\nid serial";
-		for (size_t j = 0, size2 = table[i].field.size (); j < size2; j++) {
-			res += "\n, \"" + table[i].field[j].name + "\" " + sqlType (table[i].field[j].type);
-			if (!table[i].field[j].name.compare (table[i].pk)) res += " primary key";
-//			if (j != size2 - 1) res += ",\n";
-		}
-		res += "\n, CONSTRAINT " + table[i].name + "_pkey PRIMARY KEY (id));\n";
-	}
-
-	for (size_t i = 0; i != this->fk.size (); i++) {
-		res += "ALTER TABLE \"" + this->fk[i].table1 + "\" ADD CONSTRAINT f" + this->fk[i].table1 + this->fk[i].table2 + this->fk[i].field1 + " FOREIGN KEY (\"" + this->fk[i].field1 + "\") REFERENCES \"" + this->fk[i].table2 + "\"(" + this->fk[i].field2 + ");\n"; 
-	}
-
-	return res;
 }
 
 std::string Schema::toHbm (const std::string& name) {

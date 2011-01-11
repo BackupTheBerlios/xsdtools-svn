@@ -1,18 +1,11 @@
 xsdtools is a tool for converting xsd-schematas to SQL schemata and to hibernate's mapping files.
 
-There are two binaries:
-	xsd2sql provides converting xsd-schemata to SQL.
-	xsd2hbm provides converting xsd-schemata to hibernate's mapping files.
-
-xsd2sql has following parameters:
-	--xsd, -x        Point to the xsd-file
-	--individual, -i Generate individual table for pointed entity.
+xsd2hbm provides converting xsd-schemata to hibernate's mapping files.
 
 The "-i" flag provides possibility to create a `symlinks` for types.
 I.e. there is a type `SystemParameter` (code: int, description: text) which is used for several sense.
 Patient (name: text, marital: SystemParameter, infection: SystemParameter)
 It will be better have different description for marital and infection fields.
-Those command "xsd2sql -x schemata.xsd -i SystemParameter" creates an own table for storing values of marital and infection.
 
 	--list, -l       List of tables
 
@@ -21,4 +14,6 @@ xsd2hbm has following parameters:
 	--individual, -i Generate indivual class for pointed entity
 	--hbm, -b        Generate .hbm.xml files for pointed table
 	--list, -l       List of classes
+
+The libxml-2.0-devel, libtool and boost-devel should be installed.
 
