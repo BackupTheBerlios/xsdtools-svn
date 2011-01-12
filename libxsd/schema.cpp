@@ -24,14 +24,14 @@
 
 namespace lang {
 	bool isSimple (const std::string& type) {
-	        if (!type.compare ("string") || !type.compare ("int") || !type.compare ("boolean") || !type.compare ("decimal") || !type.compare ("unsignedByte") || !type.compare ("dateTime") || !type.compare ("integer")) return true;
+	        if (!type.compare ("string") || !type.compare ("int") || !type.compare ("boolean") || !type.compare ("decimal") || !type.compare ("unsignedByte") || !type.compare ("dateTime") || !type.compare ("integer") || !type.compare ("date")) return true;
 	        return false;
 	}
 
 	std::string sqlType (const std::string& type) {
 	        if (!type.compare ("string")) return "text";
 		if (!type.compare ("unsignedByte")) return "int";
-		if (!type.compare ("dateTime")) return "timestamp";
+		if (!type.compare ("dateTime") || !type.compare ("date")) return "timestamp";
 	        return type;
 	}
 
@@ -48,7 +48,7 @@ namespace lang {
 //	        if (!type.compare ("string")) return "String";
 		if (!type.compare ("decimal")) return "java.math.BigDecimal";
 		if (!type.compare ("unsignedByte")) return "java.lang.Integer";
-		if (!type.compare ("dateTime")) return "java.sql.Timestamp";
+		if (!type.compare ("dateTime") || !type.compare ("date")) return "java.sql.Timestamp";
 		if (!type.compare ("boolean")) return "java.lang.Boolean";
 	        return type;
 	}
